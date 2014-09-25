@@ -1,6 +1,6 @@
 Type=Exe
 Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#C:\Windows\system32\stdole2.tlb#OLE Automation
-Reference=*\G{00020905-0000-0000-C000-000000000046}#8.3#0#..\..\..\Program Files\Microsoft Office\OFFICE11\MSWORD.OLB#Microsoft Word 11.0 Object Library
+Reference=*\G{00020905-0000-0000-C000-000000000046}#8.3#0#..\..\Program Files\Microsoft Office\OFFICE11\MSWORD.OLB#Microsoft Word 11.0 Object Library
 Form=Form1.frm
 IconForm="Form1"
 Startup="Form1"
@@ -12,7 +12,7 @@ Name="FAGS"
 HelpContextID="0"
 CompatibleMode="0"
 MajorVer=1
-MinorVer=0
+MinorVer=1
 RevisionVer=0
 AutoIncrementVer=0
 ServerSupportFiles=0

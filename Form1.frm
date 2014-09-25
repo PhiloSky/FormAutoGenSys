@@ -68,7 +68,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '试验记录自动生成系统
-'消防应急灯具（照明灯具、标志灯具）
+'适用于消防应急灯具（照明灯具、标志灯具）
 
 Sub Command1_Click()
     Label1.Caption = "生成中……"
@@ -82,19 +82,19 @@ Sub Command1_Click()
     Dim num As String
     Dim mdl As String
     
-    Open App.Path & "/任务单.csv" For Input As #1
+    fname = "照明"      '灯具类型初始化
+    
+    Open App.Path & "\任务单.csv" For Input As #1
     
     Do While Not EOF(1)
         Line Input #1, str
-        If str = "2014照明," Then
-            fname = "照明.doc"
-        ElseIf str = "2014标志," Then
-            fname = "标志.doc"
+        If str = "" Then
+            fname = "标志"      '灯具类型改变
         Else
             num = Left(str, 9)
             mdl = Right(str, (Len(str) - 10))
             
-            Set wDoc = Documents.Open(FileName:=App.Path & "/模板" & fname)
+            Set wDoc = Documents.Open(FileName:=App.Path & "\模板" & fname & ".doc")
             Set wSel = Documents.Application.Selection
             
             With wSel.Find
@@ -110,9 +110,9 @@ Sub Command1_Click()
             
             wSel.Find.Execute Replace:=wdReplaceAll
             wSel.GoTo wdGoToBookmark, , , "样品照片"
-            wSel.InlineShapes.AddPicture FileName:=App.Path & "/" & num & ".jpg"
+            wSel.InlineShapes.AddPicture FileName:=App.Path & "\未打印照片\" & num & ".jpg"
             
-            wDoc.SaveAs App.Path & ("/" & num & "-" & fname)
+            wDoc.SaveAs App.Path & "\未打印" & fname & "\" & num & "-" & fname & ".doc"
             wDoc.Close
         End If
     Loop
