@@ -4,11 +4,28 @@ Begin VB.Form Form1
    ClientHeight    =   3030
    ClientLeft      =   1530
    ClientTop       =   1515
-   ClientWidth     =   4560
+   ClientWidth     =   4575
    Icon            =   "Form1.frx":0000
    LinkTopic       =   "Form1"
    ScaleHeight     =   3030
-   ScaleWidth      =   4560
+   ScaleWidth      =   4575
+   Begin VB.CommandButton Command3 
+      Caption         =   "读取"
+      BeginProperty Font 
+         Name            =   "楷体"
+         Size            =   14.25
+         Charset         =   134
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   495
+      Left            =   120
+      TabIndex        =   3
+      Top             =   2160
+      Width           =   1095
+   End
    Begin VB.CommandButton Command2 
       Caption         =   "退出"
       BeginProperty Font 
@@ -21,7 +38,7 @@ Begin VB.Form Form1
          Strikethrough   =   0   'False
       EndProperty
       Height          =   495
-      Left            =   2880
+      Left            =   3240
       TabIndex        =   2
       Top             =   2160
       Width           =   1095
@@ -38,7 +55,7 @@ Begin VB.Form Form1
          Strikethrough   =   0   'False
       EndProperty
       Height          =   495
-      Left            =   600
+      Left            =   1680
       TabIndex        =   0
       Top             =   2160
       Width           =   1095
@@ -55,11 +72,11 @@ Begin VB.Form Form1
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Height          =   495
-      Left            =   840
+      Height          =   975
+      Left            =   600
       TabIndex        =   1
       Top             =   720
-      Width           =   2895
+      Width           =   3375
    End
 End
 Attribute VB_Name = "Form1"
@@ -110,7 +127,7 @@ Sub Command1_Click()
             
             wSel.Find.Execute Replace:=wdReplaceAll
             wSel.GoTo wdGoToBookmark, , , "样品照片"
-            wSel.InlineShapes.AddPicture FileName:=App.Path & "\未打印照片\" & num & ".jpg"
+            wSel.InlineShapes.AddPicture FileName:=App.Path & "\未打印" & fname & "\" & num & ".jpg"
             
             wDoc.SaveAs App.Path & "\未打印" & fname & "\" & num & "-" & fname & ".doc"
             wDoc.Close
@@ -122,9 +139,47 @@ Sub Command1_Click()
     Set wDoc = Nothing
     Set wApp = Nothing
     
-    Label1.Caption = "已完成"
+    Command3.Enabled = False
+    Label1.Caption = " 　生成完成　 请点击退出"
 End Sub
 
 Private Sub Command2_Click()
     End
+End Sub
+
+Private Sub Command3_Click()
+    Label1.Caption = "读取中……"
+    Dim fso As Object
+    Dim folder As Object
+    Dim file As Object
+    Dim num As String
+ 
+    Open App.Path & "\任务单.csv" For Output As #2
+    Close #2
+    Open App.Path & "\任务单.csv" For Append As #2
+    Set fso = CreateObject("scripting.filesystemobject")
+    
+    Set folder = fso.getfolder(App.Path & "\未打印照明")
+
+    For Each file In folder.Files
+       num = Right(file, 13)
+       num = Left(num, 9) & ","
+       Print #2, num
+    Next
+    
+    Print #2,
+    
+    Set folder = fso.getfolder(App.Path & "\未打印标志")
+    
+    For Each file In folder.Files
+       num = Right(file, 13)
+       num = Left(num, 9) & ","
+       Print #2, num
+    Next
+    
+    Close #2
+    Set fso = Nothing
+    Set folder = Nothing
+    Command1.Enabled = False
+    Label1.Caption = " 　读取完成　 请手动输入型号"
 End Sub
