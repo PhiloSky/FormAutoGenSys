@@ -94,26 +94,40 @@ Sub Command1_Click()
     Dim wSel As Word.Selection
     Set wApp = New Word.Application
 
-    Dim str As String
+    Dim i As Integer
+    Dim strin As String
+    Dim strh() As String
     Dim fname As String
+    
     Dim num As String
     Dim mdl As String
-    
+    'Dim corp As String
+        
     fname = "照明"      '灯具类型初始化
     
     Open App.Path & "\任务单.csv" For Input As #1
     
     Do While Not EOF(1)
-        Line Input #1, str
-        If str = "" Then
-            fname = "标志"      '灯具类型改变
+        Line Input #1, strin
+        
+        If strin = "" Then  '灯具类型改变
+            fname = "标志"
         Else
-            num = Left(str, 9)
-            mdl = Right(str, (Len(str) - 10))
+            strh = Split(strin, ",")
+            num = strh(0)
+            mdl = strh(1)
+            'corp = strh(2)
+            
+            '旧方法
+            'num = Left(strin, 9)
+            'mdl = Right(strin, (Len(strin) - 10))
+            'corp = Right(mdl, (Len(mdl) - InStr(mdl, ",")))
+            'mdl = Left(mdl, (InStr(mdl, ",") - 1))
             
             Set wDoc = Documents.Open(FileName:=App.Path & "\模板" & fname & ".doc")
             Set wSel = Documents.Application.Selection
             
+            '替换字段
             With wSel.Find
                 .Text = "123456789"
                 .Replacement.Text = num
@@ -123,12 +137,21 @@ Sub Command1_Click()
             With wSel.Find
                 .Text = "ABCDEFG"
                 .Replacement.Text = mdl
+                .MatchCase = True
             End With
-            
             wSel.Find.Execute Replace:=wdReplaceAll
+            
+            'With wSel.Find
+            '    .Text = "XX市XXXX有限公司"
+            '    .Replacement.Text = corp
+            'End With
+            'wSel.Find.Execute Replace:=wdReplaceAll
+            
+            '插入照片
             wSel.GoTo wdGoToBookmark, , , "样品照片"
             wSel.InlineShapes.AddPicture FileName:=App.Path & "\未打印" & fname & "\" & num & ".jpg"
             
+            '输出文件
             wDoc.SaveAs App.Path & "\未打印" & fname & "\" & num & "-" & fname & ".doc"
             wDoc.Close
         End If
@@ -154,7 +177,7 @@ Private Sub Command3_Click()
     Dim file As Object
     Dim num As String
  
-    Open App.Path & "\任务单.csv" For Output As #2
+    Open App.Path & "\任务单.csv" For Output As #2  '清除原有内容
     Close #2
     Open App.Path & "\任务单.csv" For Append As #2
     Set fso = CreateObject("scripting.filesystemobject")
